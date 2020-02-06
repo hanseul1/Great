@@ -270,7 +270,7 @@
 
 - 구현 결과
 
-  <img src="/img/AppBarButton.gif/>
+  ![AppBarButton](https://user-images.githubusercontent.com/33472435/73939975-e86c7780-492d-11ea-99b1-da47a204d349.gif)
 
 - 구현 방식
 

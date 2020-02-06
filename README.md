@@ -270,7 +270,7 @@
 
 - 구현 결과
 
-  
+  <img src="/img/AppBarButton.gif/>
 
 - 구현 방식
 

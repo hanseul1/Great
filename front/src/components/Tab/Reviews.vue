@@ -1,15 +1,15 @@
 <template>
-  <div align='center'>
+  <div align='center' class="reviews-box">
     <v-sheet class=""  max-width="900">
-      <v-slide-group  v-model="model" class="slide-group" :show-arrows="showArrows">
+      <v-slide-group   class="slide-group" >
         <v-slide-item 
-          v-for="(n,index) in totalReiviews"
-          :key="n"
-          v-slot:default="{  }"
+          v-for="review in myReviews"
+          :key="review.id"
+          v-slot:default="{ }"
         >
           <v-card
           >
-            <TabCard :reviewIdx=index />
+            <ReviewCard :reviewItem=review />
           </v-card>
 
         </v-slide-item>
@@ -19,24 +19,20 @@
 </template>
 
 <script>
-import TabCard from "@/components/Tab/TabCard.vue";
+import ReviewCard from "@/components/Tab/ReviewCard.vue";
 export default {
   name: "Reviews",
   components: {
-    TabCard,
-  },
-  data(){
-      return{
-      
-      }
+    ReviewCard,
   },
   computed:{
     totalReiviews : function(){
       return this.$store.state.reviews;
+    },
+    myReviews:function(){
+      return this.$store.state.userReviewList;
     }
-  }
+  },
 };
-
 </script>
 
-<style></style>

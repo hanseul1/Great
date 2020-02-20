@@ -1,6 +1,20 @@
-﻿# Sub-PJT 03
+﻿# Great(Sub-PJT 03)
 
-## 기본환경세팅
+1. [기본 환경 세팅](#기본-환경-세팅)
+
+2. [디렉토리 구조](#디렉토리-구조)
+
+3. [데이터베이스 구조](#데이터베이스-구조)
+
+4. [REST API](#rest-api)
+
+5. [구현 결과](#구현-결과)
+
+6. [Test](#test)
+
+7. [Developers](#developers)
+
+## 기본 환경 세팅
 
 ### Frontend
 
@@ -9,10 +23,16 @@
 - `vue`: 2.6.11
   - `vuecli` : `npm install -g @vue/cli` : 4.1.2
 - package.json dependencies
+
 ```
 "dependencies": {
+  "axios": "^0.19.2",
   "core-js": "^3.4.4",
+  "email-validator": "^2.0.4",
+  "password-validator": "^5.0.3",
   "vue": "^2.6.10",
+  "vue-google-oauth2": "^1.4.0",
+  "vue-kakao-login": "^1.0.5",
   "vue-router": "^3.1.3",
   "vuetify": "^2.1.0",
   "vuex": "^3.1.2"
@@ -52,6 +72,7 @@
 |           |               |-- config
 |           |               |-- controller
 |           |               |-- dto
+|           |               |-- exception
 |           |               |-- filter
 |           |               |-- interceptor
 |           |               |-- model
@@ -61,12 +82,24 @@
 |               |-- config
 |               |   |-- SqlMapConfig.xml
 |               |   `-- application-config.xml
-|               `-- query
-|                   |-- bookmark_sql.xml
-|                   |-- category_sql.xml
-|                   |-- review_sql.xml
-|                   |-- store_sql.xml
-|                   `-- user_sql.xml
+|               |-- query
+|               |   |-- bookmark_sql.xml
+|               |   |-- category_sql.xml
+|               |   |-- review_sql.xml
+|               |   |-- store_sql.xml
+|               |   `-- user_sql.xml
+|               `-- static
+|                   |-- 649900.png
+|                   |-- css
+|                   |   |-- app.6f548207.css
+|                   |   `-- chunk-vendors.d0bfe27c.css
+|                   |-- favicon.ico
+|                   |-- index.html
+|                   `-- js
+|                       |-- app.fc8c495d.js
+|                       |-- app.fc8c495d.js.map
+|                       |-- chunk-vendors.270e66b8.js
+|                       `-- chunk-vendors.270e66b8.js.map
 `-- front
     |-- README.md
     |-- babel.config.js
@@ -79,14 +112,70 @@
     `-- src
         |-- App.vue
         |-- apis
+        |   |-- BookmarkApi.js
+        |   |-- GridApi.js
+        |   |-- KakaoApi copy.js
+        |   |-- KakaoApi.js
+        |   |-- MypageApi.js
         |   `-- UserApi.js
         |-- assets
+        |   |-- img
         |   `-- style
         |-- components
+        |   `
+        |   |-- Form
+        |   |   `-- Login.vue
         |   |-- Grid
+        |   |   |-- FoodCategory.vue
+        |   |   |-- GridItem.vue
+        |   |   |-- GridMap.vue
+        |   |   |-- MainFoodGrid.vue
+        |   |   |-- MobileGrid
+        |   |   `-- Table.vue
+        |   |-- Index
+        |   |   |-- About.vue
+        |   |   `-- AboutCard.vue
+        |   |-- Sidebar
+        |   |   |-- BodyText.vue
+        |   |   |-- ImageInfo.vue
+        |   |   |-- MenuText.vue
+        |   |   |-- ReviewInfo.vue
+        |   |   |-- ReviewWrite.vue
+        |   |   |-- Sidebar.vue
+        |   |   |-- SidebarCollide.vue
+        |   |   |-- TextInfo.vue
+        |   |   `-- TitleText.vue
         |   |-- Tab
+        |   |   |-- GridBookmark.vue
+        |   |   |-- GridList.vue
+        |   |   |-- Info.vue
+        |   |   |-- ReviewCard.vue
+        |   |   |-- Reviews.vue
+        |   |   |-- StoreBookmark.vue
+        |   |   |-- StoreInfoModal.vue
+        |   |   `-- StoreList.vue
         |   |-- UI
+        |   |   |-- Button.vue
+        |   |   |-- ChatUI.vue
+        |   |   |-- Footer.vue
+        |   |   |-- Input.vue
+        |   |   |-- MobileFooter.vue
+        |   |   |-- SearchBar.vue
+        |   |   `-- SortButton.vue
         |   `-- common
+        |       |-- BarButton.vue
+        |       |-- BreadCrumb.vue
+        |       |-- Card.vue
+        |       |-- CardContainer.vue
+        |       |-- CarouselIndicator.vue
+        |       |-- Chip.vue
+        |       |-- LogoutButton.vue
+        |       |-- MapApp.vue
+        |       |-- NavBar.vue
+        |       |-- SearchMap.vue
+        |       |-- SocialLogin.vue
+        |       |-- StarRating.vue
+        |       `-- StarRatingInput.vue
         |-- main.js
         |-- plugins
         |   `-- vuetify.js
@@ -96,17 +185,20 @@
         |   `-- index.js
         `-- views
             |-- Authentication.vue
+            |-- BookmarkGrid.vue
+            |-- FindPassword.vue
             |-- Index.vue
+            |-- Join.vue
             |-- Main.vue
+            |-- Map.vue
             |-- Mypage.vue
-            `-- PageNotFound.vue
+            |-- PageNotFound.vue
+            |-- Social.vue
+            |-- SocialJoin.vue
+            `-- index2.vue
 ```
 
-
-
-## Back-End(Spring Boot)
-
-### 데이터베이스 구조
+## 데이터베이스 구조
 
 #### 사용자 테이블 : user
 
@@ -179,21 +271,25 @@
 | bookmark | 북마크 id                | int  | foreign key(bookmark.id)    |
 | store    | 식당 id                  | int  | foreign key(store.id)       |
 
+#### Database Diagram
 
+![DatabaseDiagram](/img/DatabaseDiagram.PNG)
 
-### REST API
+## REST API
 
 #### User API
 
-| Method | URI                 | Definition                                            |
-| ------ | ------------------- | ----------------------------------------------------- |
-| GET    | /user               | 모든 사용자 목록 검색                                 |
-| GET    | /user/{id}          | 사용자 id에 해당하는 사용자 검색                      |
-| GET    | /user/email/{email} | 사용자 email에 해당하는 사용자 검색(이메일 중복 체크) |
-| POST   | /user/login         | 사용자 로그인                                         |
-| POST   | /user               | 사용자 정보 등록(회원가입)                            |
-| PUT    | /user               | 사용자 정보 수정                                      |
-| DELETE | /user/{id}          | 사용자 id에 해당하는 사용자 정보 삭제(회원탈퇴)       |
+| Method | URI                  | Definition                                            |
+| ------ | -------------------- | ----------------------------------------------------- |
+| GET    | /user                | 모든 사용자 목록 검색                                 |
+| GET    | /user/{id}           | 사용자 id에 해당하는 사용자 검색                      |
+| GET    | /user/email/{email}  | 사용자 email에 해당하는 사용자 검색(이메일 중복 체크) |
+| GET    | /user/search/{email} | 사용자 email에 해당하는 사용자 id 검색                |
+| POST   | /user/login          | 사용자 로그인                                         |
+| POST   | /user/socialLogin    | 사용자 소셜로그인                                     |
+| POST   | /user                | 사용자 정보 등록(회원가입)                            |
+| PUT    | /user                | 사용자 정보 수정                                      |
+| DELETE | /user/{id}           | 사용자 id에 해당하는 사용자 정보 삭제(회원탈퇴)       |
 
 #### Category API
 
@@ -204,315 +300,114 @@
 
 #### Store API
 
-| Method | URI                                | Definition                                                   |
-| ------ | ---------------------------------- | ------------------------------------------------------------ |
-| GET    | /store/{id}                        | 식당 id에 해당하는 식당 정보 검색                            |
-| GET    | /store/category/{category}         | 식당 category에 해당하는 식당 목록 검색<br>(별점 기준 내림차순 정렬) |
+| Method | URI                                | Definition                                                           |
+| ------ | ---------------------------------- | -------------------------------------------------------------------- |
+| GET    | /store/{id}                        | 식당 id에 해당하는 식당 정보 검색                                    |
+| GET    | /store/rating/{category}/{x}/{y}   | 식당 category에 해당하는 식당 목록 검색<br>(별점 기준 내림차순 정렬) |
 | GET    | /store/location/{category}/{x}/{y} | 식당 category에 해당하는 식당 목록 검색<br>(거리 기준 내림차순 정렬) |
-| PUT    | /store                             | 식당 정보 수정                                               |
-| DELETE | /store/{id}                        | 식당 id에 해당하는 식당 정보 삭제                            |
+| GET    | /store/rand/{category}/{x}/{y}     | 식당 category에 해당하는 식당 목록 검색<br>(랜덤 정렬)               |
+| PUT    | /store                             | 식당 정보 수정                                                       |
+| DELETE | /store/{id}                        | 식당 id에 해당하는 식당 정보 삭제                                    |
 
 #### Review API
 
-| Method | URI                   | Definition                                                               |
-| ------ | --------------------- | ------------------------------------------------------------------------ |
-| GET    | /review               | 모든 리뷰 목록 검색                                                      |
-| GET    | /review/{id}          | 리뷰 id에 해당하는 리뷰 검색                                             |
-| GET    | /review/store/{store} | 식당 id에 해당하는 리뷰 목록 검색<br>(리뷰 작성 날짜 기준 내림차순 정렬) |
-| POST   | /review               | 리뷰 정보 등록                                                           |
-| PUT    | /review               | 리뷰 정보 수정                                                           |
-| DELETE | /review/{id}          | 리뷰 id에 해당하는 리뷰 정보 삭제                                        |
+| Method | URI                     | Definition                                                               |
+| ------ | ----------------------- | ------------------------------------------------------------------------ |
+| GET    | /review                 | 모든 리뷰 목록 검색                                                      |
+| GET    | /review/{id}            | 리뷰 id에 해당하는 리뷰 검색                                             |
+| GET    | /review/store/{store}   | 식당 id에 해당하는 리뷰 목록 검색<br>(리뷰 작성 날짜 기준 내림차순 정렬) |
+| GET    | /review/search/{userId} | 사용자 id에 해당하는 리뷰 목록 검색                                      |
+| POST   | /review                 | 리뷰 정보 등록                                                           |
+| PUT    | /review                 | 리뷰 정보 수정                                                           |
+| DELETE | /review/{id}            | 리뷰 id에 해당하는 리뷰 정보 삭제                                        |
 
 #### Bookmark API
 
-| Method | URI                     | Definition                                   |
-| ------ | ----------------------- | -------------------------------------------- |
-| GET    | /bookmark/{user}/{type} | 사용자 id와 type에 해당하는 북마크 목록 검색 |
-| GET    | /bookmark/{id}          | 북마크 id에 해당하는 식당 목록 검색          |
-| POST   | /bookmark               | 북마크 정보 등록                             |
-| PUT    | /bookmark               | 북마크 정보 수정                             |
-| DELETE | /bookmark/{id}          | 북마크 id에 해당하는 북마크 삭제             |
+| Method | URI                          | Definition                                       |
+| ------ | ---------------------------- | ------------------------------------------------ |
+| GET    | /bookmark/{user}/{type}      | 사용자 id와 type에 해당하는 북마크 목록 검색     |
+| GET    | /bookmark/{id}               | 북마크 id에 해당하는 식당 목록 검색              |
+| POST   | /bookmark                    | 북마크 정보 등록                                 |
+| PUT    | /bookmark                    | 북마크 정보 수정                                 |
+| DELETE | /bookmark/{id}               | 북마크 id에 해당하는 북마크 삭제                 |
+| DELETE | /bookmark/{userId}/{storeId} | 사용자가 북마크한 식당 id에 해당하는 북마크 삭제 |
 
+## 구현 결과
 
+#### Index
 
-#### Spatial Index
+![index](/img/pages/index.PNG)
 
-- 사용자 위치의 x좌표, y좌표 기준으로 가까운 식당 목록 20개를 데이터베이스에서 쿼리해 가져와야 한다.
-- 데이터베이스의 모든 데이터와 값을 비교하고, 정렬까지 하면 DB 서버에 큰 부담이 갈 것이다.
-- MySQL에서 제공하는 geospatial Index를 생성하여 빠르게 데이터를 조회할 수 있도록 구현하였다.
-  - geospatial index는 내부적으로 R-Tree 구조로 데이터를 저장한다.
-    - R-Tree는 2차원 이상의 공간 데이터 값을 저장하는 자료구조이다.
-    - 공간 데이터값들을 최소 경계 사각형(MBR, Minimum Bounding Rectangle)으로 분할하여 인덱싱한다. (각 MBR의 경계는 서로 겹칠 수 있다.)
-    - 즉, 트리의 각 노드들은 일정 범위 내의 공간 데이터를 저장하고 있어 현재 위치에서 일정 범위 내의 데이터를 조회하는데 유용하다.
-    - 각 노드의 데이터가 key-value 쌍으로 이루어져 인덱싱된 B-Tree는 범위 스캔보다는 정확한 지점을 찾을 때 유리하다.
-  - ST_Distance_Sphere 함수로 두 좌표 사이의 거리를 계산하여 쿼리를 수행한다.
+![index2](/img/pages/index2.PNG)
 
-- MySQL Query문
+![index3](/img/pages/index3.PNG)
 
-  ```xml
-  <select id="selectByLocation" parameterType="java.util.HashMap" resultType="store">
-      select *
-        from store s
-       where category = #{category}
-         and ST_Distance_Sphere(location, point(#{x}, #{y})) <![CDATA[<]]> 10000
-       order by ST_Distance_Sphere(location, point(#{x}, #{y}))
-       limit 20
-  </select>
-  ```
+<img src="/img/pages/mindex.PNG" alt="mindex" style="zoom:80%;" />
 
-  
+#### Login / Join
 
-## Front-End (Vue)
+![login](/img/pages/login.PNG)
 
-### BarButton Component
+![join](/img/pages/join.PNG)
 
-- pure HTML과 CSS만을 활용하여 직접 button vue component를 구현하였다.
+![socialjoin](/img/pages/socialjoin.PNG)
 
-- 구현 결과
+![findpassword](/img/pages/findpassword.PNG)
 
-  ![AppBarButton](https://user-images.githubusercontent.com/33472435/73939975-e86c7780-492d-11ea-99b1-da47a204d349.gif)
+<img src="/img/pages/mlogin.PNG" alt="mlogin" style="zoom:70%;" />
 
-- 구현 방식
+<img src="/img/pages/mjoin.PNG" alt="mjoin" style="zoom:70%;" />
 
-  - div 태그로 감싼 영역에 border-radius 속성으로 둥그런 버튼 모양 생성
-  - 해당 div 태그에 `bar-btn` 이라는 class 이름을 부여하고, 마우스 hover시 우측 padding을 늘려주는 방식으로 transition을 주었다.
-  - arrow-icon 이미지는 처음에 `display: none` css 속성을 주고, `bar-btn` 클래스에 마우스 hover시 css 속성을 `display: inline` 으로 변경하도록 하였다.
-  - 마지막으로 div 태그에 v-on:click 속성 지정으로 router 이동을 구현하였다.
+#### Mypage
 
-- 구현 코드
+![mypage1](/img/pages/mypage1.PNG)
 
-  ```html
-  <template>
-  <div>
-    <div 
-      class="bar-btn" 
-      @click="go('Main')">
-    <span>Let's Start</span>
-    <img 
-        src="@/assets/img/arrow-icon.png"
-        class="bar-btn-img"/>
-    </div>
-  </div>
-  </template>
-  
-  <script>
-  import '@/assets/style/css/barButton.css'
-  export default {
-    name: "BarButton",
-    methods: {
-      go(link) {
-        this.$router.push(link);
-      }
-    }
-  };
-  </script>
-  ```
+![mypage2](/img/pages/mypage2.PNG)
 
-  ```css
-  /* BarButton component */
-  .bar-btn {
-      font-family: "Lobster", cursive;
-      background-color: #fbedeb;
-      padding: 3px 20px 3px 20px;
-      font-size: 1.2em;
-      cursor: pointer;
-      border-radius: 25px;
-      display: inline;
-      transition-duration: 0.5s;
-    }
-    .bar-btn img {
-      display: none;
-    }
-    .bar-btn:hover {
-      padding: 3px 40px 3px 20px;
-    }
-    .bar-btn:hover img {
-      display: inline;
-    }
-    .bar-btn-img {
-      height: 90%;
-      position: absolute;
-      margin-top: 2px;
-    }
-  ```
+![mypage3](/img/pages/mypage3.PNG)
 
-  
+<img src="/img/pages/mmypage.PNG" alt="mmypage" style="zoom:70%;" />
 
-### Grid Component
+<img src="/img/pages/mmypage2.PNG" alt="mmypage" style="zoom:70%;" />
 
-- 사용자가 장소를 선택했을 때 주변 식당 목록을 카테고리별로 보여주는 메인 그리드 화면이다.
-- 기본 식당을 정렬하는 기준은 사용자가 지정한 위치 기준 가까운 순서이다.
+<img src="/img/pages/mmypage3.PNG" alt="mmypage" style="zoom:70%;" />
 
-#### Data Rendering with axios & vuex
+#### Grid
 
-- axios
+![grid1](/img/pages/grid1.PNG)
 
-  - 사용자가 선택한 위치 기준 카테고리 목록 8개의 가까운 식당 20개 리스트를 응답해주는 REST API를 활용한다.
+![grid2](/img/pages/grid2.PNG)
 
-    - uri : /store/location/{category}/{x}/{y}
+![sidebar](/img/pages/sidebar.png)
 
-  - 문제 사항
+<img src="/img/pages/mgrid1.PNG" alt="mgrid1" style="zoom:70%;" />
 
-    - 해당 API는 하나의 카테고리에 대한 식당 목록을 응답해주므로, 전체 Grid를 완성하기 위해서는 총 8번의 API 반복 호출이 필요하다.
+<img src="/img/pages/mgrid2.PNG" alt="mgrid2" style="zoom:70%;" />
 
-    - 일반 for문 안에서 axios 호출과 호출 성공시 처리를 한번에 하면 axios의 비동기 수행 성질 때문에 식당 리스트의 동기화가 어려웠다.
+<img src="/img/pages/mgrid3.PNG" alt="mgrid3" style="zoom:70%;" />
 
-      ```javascript
-      for(var i = 0; i < categories.length; i++){
-        var categoryName = categories[i].name
-            // api 호출 코드
-        axio.get('http://SERVER_IP:PORT/URI/variable')
-            .then(response => {
-            // api 호출 성공시 처리 코드
-        })
-      }
-      ```
+## Test
 
-      => 위와 같이 코드를 구현하면, API를 호출하는 코드가 비동기적으로 먼저 수행되고, 응답이 오는 순서대로 then(...) 코드를 수행하기 때문에 categoryName을 인덱스별로 정의하는 타이밍과 동기화되지 않는다.
+#### Test Case
 
-    - for문 안에서 각 API를 호출하는 코드를 수행하는 함수를 호출하도록 변경해 동기화 할 수 있도록 했다.
+![TestCase1](/img/TestCase1.PNG)
 
-      ```javascript
-      for(var i = 0; i < categories.length; i++){
-        var categoryName = categories[i].name
-        var categoryId = categories[i].id
-        this.apiCall(categoryId, categoryName, x, y)
-      }
-      
-      /* API 한번씩 호출하고 응답 데이터 처리하는 함수 */
-      apiCall(categoryId, categoryName, x, y) {
-        var data = {
-          locationX : x,
-          locationY : y,
-          category : categoryId
-        }
-        GridApi.requestGridStores(data, response => {
-          for(var i = response.length; i < 8; i++){
-            response.push({"name": ""})
-          }
-          this.$store.commit(categoryName, response)
-        })
-      }
-      ```
+![TestCase2](/img/TestCase2.PNG)
 
-- Vuex
+![TestCase3](/img/TestCase3.PNG)
 
-  - Vuex의 state에 각 카테고리 이름으로 식당 리스트를 저장하도록 했다.
+![TestCase4](/img/TestCase4.PNG)
 
-    ```javascript
-    categories: [
-      {id: 1, name: "한식"},
-      {id: 2, name: "중식"},
-      {id: 3, name: "일식"},
-      {id: 4, name: "아시아"},
-      ...
-    ],
-    한식: [
-      {id: 1, name: "한식"},
-      {id: 1, name: "한식"},
-      ...
-    ]
-    ```
+## Developers
 
-    
+#### 양찬우 (Team Leader / Front-End manager)
 
-#### Drag-and-Drop
+#### 박지수 (Back-End manager)
 
-- 식당 Grid 안의 작은 grid칸을 사용자가 drag해서 다른 영역으로 drop하면 
+#### 조한슬 (Back-End developer)
 
-  해당 grid의 식당 정보가 사라지고, 새로운 식당 정보로 변경되도록 구현하였다.
+#### 조신비 (Front-End developer)
 
-- 구현 방법
+#### 신채민 (Front-End developer)
 
-  - vue의 `draggable` 속성을 true로 지정하여 해당 element를 드래그할 수 있게 하였다.
-
-  - `v-on:dragend` 속성으로 드래그가 끝났을 때 함수를 지정하여 해당 인덱스의 식당 정보가 바뀔 수 있도록 하였다.
-
-  - 각 카테고리별로 식당 리스트의 index 리스트를 관리하기 때문에 해당 index의 값을 빼고, 새로운 index를 넣는 방식으로 식당 정보를 바꿔주었다.
-
-    ```javascript
-    /* v-on:dragend 속성으로 지정된 함수 */
-    changeIndex(i) {
-      var commitName = this.categoryName + 'List'
-      this.$store.commit(commitName, i)
-    }
-    ```
-
-    ```javascript
-    /* vuex의 카테고리별 index 리스트를 관리하는 mutations 함수 */
-    '한식List'(state, payload) {
-      state.한식maxIndex++;
-      state.한식index.splice(payload, 1, state.한식maxIndex)
-    },
-    ```
-
-- 구현 결과
-
-  
-
-#### mouseover & mouseleave
-
-- 식당 Grid 안의 작은 grid 칸에 마우스 hover시 식당 이름과 별점이 함께 보이도록 구현하였다.
-
-- 구현 방법
-
-  - vue의 `v-on:mouseover` 속성과 `v-on:mouseleave` 속성을 지정하여 별점을 나타내는 StarRating 컴포넌트가 마우스 hover시에만 렌더링되도록 하였다.
-
-    ```html
-    <button 
-       class="small-box"
-       @mouseover="over(i)"
-       @mouseleave="out(i)"  
-       :key="idx">
-      <GridItem :name="[itemName[idx].name]" />
-      <!-- 별점은 mouseOn의 해당 index 값이 true일 때만 보여주도록 한다. -->
-      <StarRating v-if="mouseOn[i]" :rating="itemName[idx].rating" />
-      </button>
-    ```
-
-- 구현 결과
-
-  
-
-### StarRating Component
-
-- Pure HTML과 CSS만 이용하여 별점을 시각화하여 나타내는 vue component를 구현하였다.
-
-- 구현 방법
-
-  - span 태그에 `fa-star` class를 지정하여 별을 표현하였다.
-
-  - 채워진 별은 'checked' 라는 class 이름을 지정하여 해당 클래스에 `color: orange` css 속성을 주었다.
-
-  - 별점의 점수는 props로 전달받아 computed로 5개의 span 태그 클래스 이름 list를 관리하도록 했다.
-
-  - props로 전달받은 rating 값만큼 반복문을 돌아 class 이름에 'checked'를 붙여주었다.
-
-    ```html
-    <template>
-      <div>
-        <template v-for="(className, i) in starClass">
-          <span :key="i" :class="className" class="fa-star"></span>
-        </template>
-      </div>
-    </template>
-    ```
-
-    ```javascript
-    props: ["rating"],
-    computed: {
-     starClass() {
-      var list = []
-      var className = "fa fa-star"
-      for(var i = 0; i < this.rating; i++) {
-        list.push(className + ' checked')
-      }
-      for(var j = this.rating; j < 5; j++) {
-        list.push(className)
-      }
-      return list
-     }
-    }
-    ```
-
-- 구현 결과
+![team](/img/pages/team.PNG)

@@ -11,6 +11,10 @@
 	<select id="selectById" parameterType="integer" resultType="review">
 		select * from review where id = #{id}
 	</select>
+	
+	<select id="selectByUserId" parameterType="integer" resultType="review">
+		select * from review where writer = #{writer}
+	</select>
 
 	<select id="selectByStore" parameterType="integer" resultType="review">
 		select * 
@@ -20,10 +24,12 @@
 	</select>
 
 	<insert id="insert" parameterType="review">
-		insert into review(store, contents, date, image)
+		insert into review(store, contents, writer,date, rating,image)
 		values(#{store},
 			   #{contents},
+			   #{writer},
 			   #{date},
+			   #{rating},
 			   #{image})
 	</insert>
 

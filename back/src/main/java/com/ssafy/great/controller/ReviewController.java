@@ -31,6 +31,12 @@ public class ReviewController {
 		return RestUtil.handleSuccess(service.searchAll());
 	}
 	
+	@GetMapping("/review/search/{userId}")
+	@ApiOperation("사용자가 쓴 리뷰 목록 검색")
+	public ResponseEntity<Map<String,Object>> searchByUserId(@PathVariable int userId){
+		return RestUtil.handleSuccess(service.selectByUserId(userId));
+	}
+	
 	@GetMapping("/review/{id}")
 	@ApiOperation("리뷰 id에 해당하는 리뷰 검색")
 	public ResponseEntity<Map<String,Object>> searchById(@PathVariable int id){
@@ -46,6 +52,7 @@ public class ReviewController {
 	@PostMapping("/review")
 	@ApiOperation("리뷰 정보 등록")
 	public ResponseEntity<Map<String,Object>> postReview(@RequestBody Review review){
+		System.out.println(review);
 		service.insertReview(review);
 		return RestUtil.handleSuccess("success");
 	}

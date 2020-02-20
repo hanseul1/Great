@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.great.dto.User;
 import com.ssafy.great.model.dao.UserDao;
-import com.ssafy.great.util.JwtUtil;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -70,5 +69,11 @@ public class UserServiceImpl implements UserService{
 	/** 회원 탈퇴 */
 	public void deleteUser(int id) {
 		dao.delete(id);
+	}
+
+	@Override
+	public User selectByEmail(String email) {
+		// TODO Auto-generated method stub
+		return dao.selectByEmail(email);
 	}
 }

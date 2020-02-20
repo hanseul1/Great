@@ -1,66 +1,104 @@
-/*
- User API 예시
- */
 import axios from 'axios'
 
+var session = sessionStorage;
 
 const emailCheck = (email) => {
-	return axios.get('http://13.124.1.176:8080/sendemail/'+email)
-	.then(
-		res => {
-			console.log(res);
-		}
-	)
-}
-
-
-const emailAuth = (email) => {
-	return axios.get('http://13.124.1.176:8080/user/email/'+email)
-	.then(
-		res => {
-			console.log(res);
-		}
-	)
-}
-
-const requestLogin = (loginID, loginPW, callback, errorCallback) => { // eslint-disable-line no-unused-vars
-	//백앤드와 로그인 통신하는 부분
-	let loginData = new Map();
-	loginData.set('email', loginID);
-	loginData.set('password', loginPW);
-	return axios.post('http://13.124.1.176:8080/user/login', loginData)
+	var emailRes = axios.get('http://13.124.1.176/user/email/' + email)
 		.then(
 			res => {
 				console.log(res);
 			}
 		)
-
+	return emailRes.data;
 }
-const requestRegister = (email, username, password, birth, gender) => {
-	let joinData = {
-		email: email,
-		name: username,
-		password: password,
-		birth: birth,
-		gender: gender
-	};
-	axios.post('http://13.124.1.176:8080/user/join', joinData)
-	.then(
-		res => {
-			console.log(res);
+
+
+const emailAuth = (email) => {
+	return axios.get('http://13.124.1.176/sendemail/' + email)
+		.then(
+			res => {
+				session.setItem('emailAuth', res.data.data)
+			}
+		)
+}
+
+const getID = () => {
+	var email = session.getItem('email');
+	return axios.get('http://13.124.1.176/user/search/'+email,{
+		headers: { Authorization : session.getItem('token') }
+	}).then(
+		res=> {
+			session.setItem("id",res.data.data.id);
 		}
 	)
+}
+const requestLogin = (loginID, loginPW, callback, errorCallback) => { // eslint-disable-line no-unused-vars
+	session.setItem('email', loginID);
+	return axios.post('http://13.124.1.176/user/login', {
+			email: loginID,
+			password: loginPW
+		})
+		.then(
+			res => {
+				if (res.data.data != "not success") {
+					session.setItem('token', res.data.data.Authorization);
+					session.setItem('id', res.data.data.Info.id)
+				}else{
+					session.setItem('token',null)
+				}
+
+			}
+		)
 };
 
-export const checkEmailExists = (email) => axios.get('/user/email/' + email);
+const requestLogout = () => {
+	session.setItem('id', null);
+	session.setItem('email', null);
+	session.setItem('token', null);
+	this.$store.commit('userInfo', null);
+	return session.getItem('token');
+};
 
-export const logout = () => axios.post('/api/auth/logout');
+const requestSocialRegister = (username, sns_token, birth, gender) => {
+	return axios.post('http://13.124.1.176/user/join', {
+			email: sns_token,
+			password: null,
+			sns_token: sns_token,
+			birth: birth,
+			gender: gender,
+			name: username
+		})
+		.then(
+			res => {
+				session.setItem('token', res.data.data.Authorization);
+			}
+		)
+};
+const requestRegister = (email, username, password, birth, gender) => {
+	return axios.post('http://13.124.1.176/user/join', {
+			email: email,
+			password: password,
+			sns_token: null,
+			birth: birth,
+			gender: gender,
+			name: username
+		})
+		.then(
+			res => {
+				session.setItem('token', res.data.data.Authorization);
+			}
+		)
+};
 
 
 const UserApi = {
+	// requestToken: () => requestToken(),
+	getID: () => getID(),
 	emailAuth: (email) => emailAuth(email),
 	emailCheck: (email) => emailCheck(email),
+	requestLogout: () => requestLogout(),
 	requestLogin: (data, callback, errorCallback) => requestLogin(data, callback, errorCallback),
+	requestSocialRegister: (username, sns_token, birth, gender) => requestSocialRegister(username, sns_token, birth, gender),
 	requestRegister: (email, username, password, birth, gender) => requestRegister(email, username, password, birth, gender)
 }
 

@@ -36,7 +36,7 @@ public class BasicSettingController {
 	StoreApiServiceImpl storeApiService;
 	
 	@RequestMapping(value = "/create")
-	public ResponseEntity<Map<String,Object>> searchBooks(HttpServletRequest req, HttpServletResponse res) {
+	public ResponseEntity<Map<String,Object>> create(HttpServletRequest req, HttpServletResponse res) {
 		String searchBaseWord="%20맛집";
 		String[] searchWordList = {"명동", "강남", "사당", "홍대", "건대"};
 		
@@ -49,7 +49,7 @@ public class BasicSettingController {
 		for(int i = 0; i < searchWordList.length; i++) {
 			String searchWord = searchWordList[i] + searchBaseWord;
 			Map<String, Object> result2 = apiService.createStoreInfo(searchWord, typeList[0]);
-			for(int j = 2; j< typeList.length;j++) {
+			for(int j = 0; j< typeList.length;j++) {
 				Map<String, Object> resultData = apiService.createStoreInfo(searchWord, typeList[j]);
 				LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) resultData.get("result");
 				LinkedHashMap<String, Object> place = (LinkedHashMap<String, Object>) result.get("place");
